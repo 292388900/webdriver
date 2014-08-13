@@ -2,6 +2,7 @@ package com.zchen.webdriver.bean;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -17,7 +18,6 @@ public class User {
 
     private String password;
 
-    private Set<WebDoc> docs;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
@@ -44,12 +44,4 @@ public class User {
         this.password = password;
     }
 
-    @OneToMany(mappedBy = "user")
-    public Set<WebDoc> getDocs() {
-        return docs;
-    }
-
-    public void setDocs(Set<WebDoc> docs) {
-        this.docs = docs;
-    }
 }

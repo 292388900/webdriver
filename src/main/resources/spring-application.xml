@@ -9,7 +9,7 @@
           http://www.springframework.org/schema/context
           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <context:property-placeholder location="classpath:db.properties"/>
+    <context:property-placeholder location="classpath:webdriver.properties"/>
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="${classDriver}"/>
@@ -38,8 +38,8 @@
         </property>
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
-                <!--<prop key="hibernate.hbm2ddl.auto">update</prop>-->
+                <!--<prop key="hibernate.hbm2ddl.auto">create-drop</prop>-->
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
                 <prop key="hibernate.show_sql">true</prop>
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
@@ -55,5 +55,8 @@
     <context:component-scan base-package="com.zchen.webdriver"/>
     <tx:annotation-driven/>
 
+    <bean id="configuration" class="com.zchen.webdriver.core.Configuration">
+        <property name="rootPath" value="${rootPath}"/>
+    </bean>
 
 </beans>

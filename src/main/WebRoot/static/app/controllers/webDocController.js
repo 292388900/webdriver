@@ -23,13 +23,25 @@ app.controller('WebDocController', function($scope, $http) {
     $scope.doc = {};
 
     $scope.upload = function(){
-        $http.post('doc/upload', $scope.doc).success(function(result) {
-            if(result.success == true) {
-
-            }else{
-                alert("error");
+        console.log($('#uploadFile'));
+        $('#uploadFile').fileupload({
+            dataType: 'json',
+            done: function (e, data) {
+                console.log(data);
+//                $.each(data.result.files, function (index, file) {
+//                    $('<p/>').text(file.name).appendTo(document.body);
+//                });
             }
         });
+
+//        $http.post('doc/upload', $scope.doc).success(function(result) {
+//            if(result.success == true) {
+//                $('#myModal').modal('hide');
+//                $scope.list();
+//            }else{
+//                alert("error");
+//            }
+//        });
     };
 
 

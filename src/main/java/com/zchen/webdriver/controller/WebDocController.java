@@ -1,6 +1,8 @@
 package com.zchen.webdriver.controller;
 
+import com.zchen.webdriver.bean.User;
 import com.zchen.webdriver.bean.WebDoc;
+import com.zchen.webdriver.service.UserService;
 import com.zchen.webdriver.service.WebDocService;
 import com.zchen.webdriver.utils.AjaxResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +26,24 @@ public class WebDocController {
 
     @Autowired
     private WebDocService webDocService;
+    @Autowired
+    private UserService userService;
+
 
     @RequestMapping
-    public String index(ModelMap map){
+    public String index(ModelMap map) {
         return "index";
     }
 
     @RequestMapping("/list")
     @ResponseBody
     public List list() {
-        return webDocService.list();
+        try {
+            return webDocService.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @RequestMapping("/delete/{id}")

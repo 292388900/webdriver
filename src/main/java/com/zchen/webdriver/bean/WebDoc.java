@@ -47,7 +47,7 @@ public class WebDoc {
         this.path = path;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     public User getUser() {
         return user;
