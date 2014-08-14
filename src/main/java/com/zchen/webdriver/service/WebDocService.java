@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,6 +53,8 @@ public class WebDocService {
         //save to database
         doc.setName(fileName);
         doc.setSuffix(fileSuffix);
+        doc.setSize(uploadFile.getSize());
+        doc.setUpdateTime(new Date());
         sessionFactory.getCurrentSession().save(doc);
     }
 
@@ -72,5 +75,10 @@ public class WebDocService {
     }
 
 
+    public void trash(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        WebDoc doc = (WebDoc) session.get(WebDoc.class, id);
+        doc.setRemoved(true);
+    }
 
 }

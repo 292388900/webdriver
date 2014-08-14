@@ -1,18 +1,21 @@
 app.controller('WebDocController', function ($scope, $http, FileUploader) {
 
-
-    $scope.docs = [];
-    $scope.uploadDoc={};
+    $scope.docs = [];    //index doc list
+    $scope.uploadDoc={};    //upload form
 
     $scope.list = function () {
         $http.get('doc/list').success(function (data) {
+            for(var i=0; i < data.length; i++) {
+                data[i]['displayUploadTime'] = new Date(data[i].updateTime).format("yyyy-MM-dd hh:mm:ss");
+                data[i]['displaySize'] = CommonsUtils.prettySize(data[i].size);
+            }
             $scope.docs = data;
         });
     };
 
-    $scope.remove = function (i) {
+    $scope.trash = function (i) {
         var id = $scope.docs[i].id;
-        $http.post('doc/delete/' + id).success(function (result) {
+        $http.post('doc/trash/' + id).success(function (result) {
             if (result.success == true) {
                 $scope.docs.splice(i, 1);
             } else {
@@ -42,6 +45,13 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
 
     };
 
+    $scope.showActions = function(i){
+        $scope.docs[i]['showActions'] = true;
+    };
+    $scope.hideActions = function(i){
+        $scope.docs[i]['showActions'] = false;
+    };
+
     //init
     var init = function () {
         $scope.uploader = new FileUploader({
@@ -49,7 +59,14 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
             onSuccessItem : function(item, result) {
                 if(result.success == true) {
                     $('#myModal').modal('hide');
-                    $scope.docs.unshift(result.data);
+                    var doc = result.data;
+                    //date time format
+                    doc['displayUploadTime'] = new Date(doc.updateTime).format("yyyy-MM-dd hh:mm:ss");
+                    doc['displaySize'] = CommonsUtils.prettySize(doc.size);
+
+                    //add new doc record to first row
+                    doc['highlight'] = "warning";
+                    $scope.docs.unshift(doc);
                     $scope.uploadDoc = {};
                 }else{
                     alert(result.message);

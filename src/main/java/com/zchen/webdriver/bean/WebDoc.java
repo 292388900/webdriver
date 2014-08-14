@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
+import java.util.Date;
 
 /**
  * @author Zhouce Chen
@@ -21,7 +22,13 @@ public class WebDoc {
 
     private String path;
 
+    private long size;
+
     private User user;
+
+    private Date updateTime;
+
+    private boolean isRemoved;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
@@ -58,6 +65,14 @@ public class WebDoc {
         this.path = path;
     }
 
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
     @ManyToOne
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     public User getUser() {
@@ -66,5 +81,23 @@ public class WebDoc {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Column(name = "update_time")
+    @Temporal(value = TemporalType.TIMESTAMP)
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public boolean isRemoved() {
+        return isRemoved;
+    }
+
+    public void setRemoved(boolean isRemoved) {
+        this.isRemoved = isRemoved;
     }
 }

@@ -73,4 +73,18 @@ public class WebDocController {
         }
     }
 
+    @RequestMapping("/trash/{id}")
+    @ResponseBody
+    public AjaxResult trash(@PathVariable int id) {
+
+        try {
+            webDocService.trash(id);
+            return AjaxResult.get().success();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 }

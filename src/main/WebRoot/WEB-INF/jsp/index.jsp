@@ -16,7 +16,40 @@
         app = angular.module('myApp',['angularFileUpload']);
     </script>
     <script type="text/javascript" src="${ctx}/static/app/controllers/webDocController.js"></script>
+    <script type="text/javascript">
+        Date.prototype.format = function(fmt) {
+            var o = {
+                "M+" : this.getMonth()+1,                 //月份
+                "d+" : this.getDate(),                    //日
+                "h+" : this.getHours(),                   //小时
+                "m+" : this.getMinutes(),                 //分
+                "s+" : this.getSeconds(),                 //秒
+                "q+" : Math.floor((this.getMonth()+3)/3), //季度
+                "S"  : this.getMilliseconds()             //毫秒
+            };
+            if(/(y+)/.test(fmt))
+                fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+            for(var k in o)
+                if(new RegExp("("+ k +")").test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+            return fmt;
+        };
 
+        function CommonsUtils() {
+        };
+        CommonsUtils.prettySize = function (size) {
+            var units = ['B', 'KB', 'MB', 'GB'];
+            var i = 0;
+            var resultSize = '0';
+            var unit = units[0];
+            while (size > 1024) {
+                unit = units[++i];
+                resultSize = Math.floor(size * 100 / 1024) / 100;
+                size = size / 1024;
+            }
+            return resultSize + unit;
+        }
+    </script>
 </head>
 <body ng-controller="WebDocController">
 
@@ -83,7 +116,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <span class="navbar-brand">Public Zone</span>
+                        <span class="navbar-brand">Private Zone</span>
                     </div>
 
                     <div class="collapse navbar-collapse">
@@ -114,21 +147,29 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th class="col-md-6">Document Name</th>
-                        <th>Size</th>
-                        <th>Author</th>
-                        <th>Directory</th>
-                        <th>Upload Time</th>
+                        <th class="col-md-5">Document Name</th>
+                        <th class="col-md-2"></th>
+                        <th class="col-md-1">Size</th>
+                        <th class="col-md-1">Author</th>
+                        <th class="col-md-2">Upload Time</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="doc in docs" ng-hide="doc.hidden">
-                        <td>{{doc.name}}<a href="javascript:void(0)" ng-click="remove($index)"><span
-                                class="glyphicon glyphicon-trash pull-right"></span></a></td>
-                        <td>{{doc.size}}</td>
+                    <tr ng-repeat="doc in docs" ng-hide="doc.hidden" ng-mouseover="showActions($index)" ng-mouseleave="hideActions($index)" class="{{doc.highlight}}">
+                        <td title="{{doc.name}}" style="overflow:hidden; text-overflow: ellipsis;white-space:nowrap">{{doc.name}}</td>
+                        <td>
+                            <button title="Download"  class="btn-link" ng-click="" ng-show="doc.showActions"><%--Fixme: change to directive--%>
+                            <span class="text-danger glyphicon glyphicon-cloud-download"></span></button>
+                            <button title="Star"  class="btn-link" ng-click="" ng-show="doc.showActions"><%--Fixme: change to directive--%>
+                            <span class="text-danger glyphicon glyphicon-star"></span></button>
+                            <button title="Share"  class="btn-link" ng-click="" ng-show="doc.showActions"><%--Fixme: change to directive--%>
+                            <span class="text-danger glyphicon glyphicon-share-alt"></span></button>
+                            <button title="Delete"  class="btn-link" ng-click="trash($index)" ng-show="doc.showActions"><%--Fixme: change to directive--%>
+                            <span class="text-danger glyphicon glyphicon-trash"></span></button>
+                        </td>
+                        <td>{{doc.displaySize}}</td>
                         <td>{{doc.user.username}}</td>
-                        <td>{{doc.path}}</td>
-                        <td>{{doc.uploadTime}}</td>
+                        <td>{{doc.displayUploadTime}}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -156,7 +197,8 @@
                     <div class="form-group">
                         <label for="uploadFile" class="col-sm-2 control-label">File :</label>
                         <div class="col-md-8">
-                            <input type="file"  id="uploadFile" nv-file-select uploader="uploader" name="uploadFile"/>
+                            <input type="file"  id="uploadFile" nv-file-select uploader="uploader" name="uploadFile"
+                                   style="width: 300px; text-overflow: ellipsis;white-space:nowrap"/>
                         </div>
                     </div>
                     <div class="form-group">
