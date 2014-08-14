@@ -17,6 +17,8 @@ public class WebDoc {
 
     private String name;
 
+    private String suffix;
+
     private String path;
 
     private User user;
@@ -37,6 +39,14 @@ public class WebDoc {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 
     @Column(nullable = false)

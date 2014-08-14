@@ -47,11 +47,19 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
         $scope.uploader = new FileUploader({
             url : 'doc/upload',
             onSuccessItem : function(item, result) {
-                $('#myModal').modal('hide');
-                $scope.docs.unshift(result.data);
+                if(result.success == true) {
+                    $('#myModal').modal('hide');
+                    $scope.docs.unshift(result.data);
+                    $scope.uploadDoc = {};
+                }else{
+                    alert(result.message);
+                }
             },
             onBeforeUploadItem : function(item) {
                 item.formData = [{name:$scope.uploadDoc.name}, {path:$scope.uploadDoc.path}];
+            },
+            onAfterAddingFile : function (item) {
+                $scope.uploadDoc['name'] = item.file.name;
             }
         });
         $scope.list();

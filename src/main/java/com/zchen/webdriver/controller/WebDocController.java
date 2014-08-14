@@ -5,6 +5,8 @@ import com.zchen.webdriver.bean.WebDoc;
 import com.zchen.webdriver.service.UserService;
 import com.zchen.webdriver.service.WebDocService;
 import com.zchen.webdriver.utils.AjaxResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/doc")
 public class WebDocController {
+
+    private Logger logger = LoggerFactory.getLogger(WebDocController.class);
 
     @Autowired
     private WebDocService webDocService;
@@ -59,15 +63,14 @@ public class WebDocController {
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult upload(WebDoc doc, MultipartFile uploadFile) {
+    public AjaxResult upload(WebDoc doc, MultipartFile file) {
         try {
-            webDocService.save(doc);
-            System.out.println(doc.getId());
+            webDocService.save(doc, file);//Fixme
             return AjaxResult.get().success().setData(doc);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Upload failed.", e);
+            return AjaxResult.get().failure().setMessage(e.getMessage());
         }
-        return null;
     }
 
 }

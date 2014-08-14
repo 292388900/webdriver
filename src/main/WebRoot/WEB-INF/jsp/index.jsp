@@ -156,7 +156,7 @@
                     <div class="form-group">
                         <label for="uploadFile" class="col-sm-2 control-label">File :</label>
                         <div class="col-md-8">
-                            <input type="file"  id="uploadFile" nv-file-select uploader="uploader"/>
+                            <input type="file"  id="uploadFile" nv-file-select uploader="uploader" name="uploadFile"/>
                         </div>
                     </div>
                     <div class="form-group">
