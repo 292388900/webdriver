@@ -6,28 +6,22 @@
     <title>My Web Driver</title>
     <link rel="stylesheet" type="text/css" href="${ctx}/static/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="${ctx}/static/css/bootstrap-theme.css">
-    <link rel="stylesheet" type="text/css" href="${ctx}/static/css/dashboard.css">
-    <link rel="stylesheet" type="text/css" href="${ctx}/static/css/jquery.fileupload.css">
-    <link rel="stylesheet" type="text/css" href="${ctx}/static/css/jquery.fileupload-ui.css">
+    <link rel="stylesheet" type="text/css" href="${ctx}/static/css/base.css">
     <script type="text/javascript" src="${ctx}/static/js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="${ctx}/static/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="${ctx}/static/js/doc.min.js"></script>
-    <script type="text/javascript" src="${ctx}/static/js/jquery.ui.widget.js"></script>
-    <script type="text/javascript" src="${ctx}/static/js/jquery.iframe-transport.js"></script>
-    <script type="text/javascript" src="${ctx}/static/js/jquery.fileupload.js"></script>
     <script type="text/javascript" src="${ctx}/static/js/angular.min.js"></script>
+    <script type="text/javascript" src="${ctx}/static/js/angluar-file-upload.js"></script>
     <script type="text/javascript">
-        app = angular.module('myApp',[]);
+        app = angular.module('myApp',['angularFileUpload']);
     </script>
     <script type="text/javascript" src="${ctx}/static/app/controllers/webDocController.js"></script>
-    <style>
-        body {
-            padding-top: 50px;
-        }
 
-    </style>
 </head>
 <body ng-controller="WebDocController">
+
+
+
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -80,45 +74,65 @@
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
-            <nav class="navbar" role="navigation">
+            <nav class="navbar navbar-default" role="navigation">
                 <div class="container-fluid">
-                    <div class="collapse navbar-collapse">
-                        <button type="button" class="btn btn-success navbar-btn" data-toggle="modal"
-                                data-target="#myModal"><span
-                                class="glyphicon glyphicon-cloud-upload"></span> Upload
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
                         </button>
+                        <span class="navbar-brand">Public Zone</span>
+                    </div>
+
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            <li class>
+                                <button type="button" class="btn btn-default btn-sm navbar-btn" data-toggle="modal" data-target="#myModal">
+                                <span class="glyphicon glyphicon-cloud-upload"></span> Upload
+                                </button>
+                            </li>
+                        </ul>
                         <form class="navbar-form navbar-right" role="search">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Search">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+                                    <input class="form-control input-sm" placeholder="Search ..." ng-model="searchKey" ng-change="search()">
+                                </div>
                             </div>
-                            <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-search"></span>
-                                Search
-                            </button>
                         </form>
                     </div>
                 </div>
             </nav>
-            <table class="table table-striped table-hover">
-                <thead>
-                <tr>
-                    <th class="col-md-6">Doc Name</th>
-                    <th>Size</th>
-                    <th>Author</th>
-                    <th>Directory</th>
-                    <th>Upload Time</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="doc in docs">
-                    <td>{{doc.name}}<a href="javascript:void(0)" ng-click="remove($index)"><span
-                            class="glyphicon glyphicon-trash pull-right"></span></a></td>
-                    <td>{{doc.size}}</td>
-                    <td>{{doc.user.username}}</td>
-                    <td>{{doc.path}}</td>
-                    <td>{{doc.uploadTime}}</td>
-                </tr>
-                </tbody>
-            </table>
+            <ol class="breadcrumb">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Library</a></li>
+                <li class="active">Data</li>
+            </ol>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th class="col-md-6">Document Name</th>
+                        <th>Size</th>
+                        <th>Author</th>
+                        <th>Directory</th>
+                        <th>Upload Time</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="doc in docs" ng-hide="doc.hidden">
+                        <td>{{doc.name}}<a href="javascript:void(0)" ng-click="remove($index)"><span
+                                class="glyphicon glyphicon-trash pull-right"></span></a></td>
+                        <td>{{doc.size}}</td>
+                        <td>{{doc.user.username}}</td>
+                        <td>{{doc.path}}</td>
+                        <td>{{doc.uploadTime}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -132,30 +146,30 @@
                 <h4 class="modal-title" id="myModalLabel">Upload Document</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" role="form" id="test" >
+                <form class="form-horizontal" role="form" >
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">Name :</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" id="name" ng-model="doc.name">
+                            <input type="text" class="form-control" id="name" ng-model="uploadDoc.name">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="uploadFile" class="col-sm-2 control-label">File :</label>
                         <div class="col-md-8">
-                            <input type="file"  id="uploadFile" name="Files[]" data-url="doc/upload" multiple/>
+                            <input type="file"  id="uploadFile" nv-file-select uploader="uploader"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="path" class="col-sm-2 control-label">Path :</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" id="path" ng-model="doc.path">
+                            <input type="text" class="form-control" id="path" ng-model="uploadDoc.path">
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" ng-click="upload()"><span class="glyphicon glyphicon-cloud-upload"></span> Upload</button>
+                <button id="uploadBtn" ng-click="upload()" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-cloud-upload"></span> Upload</button>
             </div>
         </div>
     </div>

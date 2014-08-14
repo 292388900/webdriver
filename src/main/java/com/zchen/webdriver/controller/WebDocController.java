@@ -9,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -59,12 +57,13 @@ public class WebDocController {
         return null;
     }
 
-    @RequestMapping("/upload")
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult upload(@RequestBody WebDoc doc) {
+    public AjaxResult upload(WebDoc doc, MultipartFile uploadFile) {
         try {
             webDocService.save(doc);
-            return AjaxResult.get().success();
+            System.out.println(doc.getId());
+            return AjaxResult.get().success().setData(doc);
         } catch (Exception e) {
             e.printStackTrace();
         }

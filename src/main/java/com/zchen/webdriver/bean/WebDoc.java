@@ -1,6 +1,7 @@
 package com.zchen.webdriver.bean;
 
 import org.hibernate.annotations.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
