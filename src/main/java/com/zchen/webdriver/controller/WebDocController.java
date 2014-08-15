@@ -43,10 +43,10 @@ public class WebDocController {
 
     @RequestMapping("/list")
     @ResponseBody
-    public List list() {
+    public List list(WebDoc doc, int parentId) {
         try {
-            List folders = folderService.list();
-            List docs = webDocService.list();
+            List folders = folderService.list(parentId);
+            List docs = webDocService.list(doc);
             folders.addAll(docs);
             return folders;
         } catch (Exception e) {

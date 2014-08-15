@@ -6,8 +6,11 @@ import com.zchen.webdriver.dao.WebDocDao;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,17 +40,20 @@ public class WebDocService {
     private Configuration configuration;
 
 
-    public List<WebDoc> list() {
-        return webDocDao.list();
+    public List<WebDoc> list(WebDoc doc) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(WebDoc.class);
+        criteria.add(Restrictions.eq("path", doc.getPath()));
+        criteria.addOrder(Order.asc("name"));
+        return criteria.list();
     }
 
     public void save(WebDoc doc, MultipartFile uploadFile) throws IOException {
         //persist file to disk
         String rootPath = configuration.getRootPath();
-        String path = doc.getPath();
         String fileSuffix = FilenameUtils.getExtension(uploadFile.getOriginalFilename());
         String fileName = FilenameUtils.getBaseName(doc.getName()) + "." + fileSuffix;
-        File destFile = FileUtils.getFile(rootPath, path, fileName);
+        File destFile = FileUtils.getFile(rootPath, fileName);
         uploadFile.transferTo(destFile);
 
         //save to database

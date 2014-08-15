@@ -110,10 +110,12 @@
                     </div>
                 </div>
             </nav>
-            <ol class="breadcrumb">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Library</a></li>
-                <li class="active">Data</li>
+            <ol class="breadcrumb" >
+                <li><a href="javascript:void(0)" ng-click="clickHome()">Home</a></li>
+                <li ng-repeat="folder in history" ng-class="{active: $last}">
+                    <span ng-show="$last">{{folder.name}}</span>
+                    <a href="javascript:void(0)" ng-hide="$last" ng-click="clickHistory($index)">{{folder.name}}</a>
+                </li>
                 <li><button class="btn-link" title="Create Folder" ng-click="openCreateFolderRow()">
                     <span class="glyphicon glyphicon-plus-sign text-primary"></span>
                     </button>
@@ -145,7 +147,7 @@
                         <td title="{{item.name}}" style="overflow:hidden; text-overflow: ellipsis;white-space:nowrap">
                             <span class="glyphicon glyphicon-folder-open text-success" style="margin-right: 10px" ng-show="item.parent !== undefined"></span>
                             <span class="glyphicon glyphicon-file text-success" style="margin-right: 10px" ng-show="item.parent === undefined"></span>
-                            {{item.name}}
+                            <button class="btn-link" style="color: #333" ng-click="clickItem($index)">{{item.name}}</button>
                         </td>
                         <td>
                             <button title="Download"  class="btn-link" ng-click="" ng-show="item.showActions"><%--Fixme: change to directive--%>
@@ -194,9 +196,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="path" class="col-sm-2 control-label">Path :</label>
+                        <label class="col-sm-2 control-label">Path :</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" id="path" ng-model="uploadDoc.path">
+                            <p class="form-control-static">{{currentFolderPath}}</p>
                         </div>
                     </div>
                 </form>

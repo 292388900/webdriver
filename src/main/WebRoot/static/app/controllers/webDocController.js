@@ -4,10 +4,19 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
     $scope.uploadDoc = {name: '', path: '', file: ''}; // doc in upload form
     $scope.uploadForm = {nameColor:'', nameSign:'', nameTip:''};
     $scope.folder = {name: ''}; // folder for creating
-    $scope.currentFolderId = 0;
+    $scope.currentFolderId = -1;
+    $scope.currentFolderPath = "/";
+    $scope.history = [];
 
     $scope.list = function () {
-        $http.get('doc/list').success(function (data) {
+        var postData = {
+            path : $scope.currentFolderPath,
+            parentId : $scope.currentFolderId
+        };
+        $http({
+            url : 'doc/list',
+            params : postData
+        }).success(function (data) {
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
                 if(item.parent === undefined) {//item is file
@@ -23,7 +32,8 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
         var item = $scope.items[i];
         var id = $scope.items[i].id;
 
-        if(item.parent === undefined) {//item is file
+        if(item.parent === undefined) {
+            //item is a file
             $http.get('doc/trash/' + id).success(function (result) {
                 if (result.success == true) {
                     $scope.items.splice(i, 1);
@@ -31,7 +41,8 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
                     alert("error");
                 }
             });
-        }else{      //item is folder
+        }else{
+            //item is a folder
             $http.get('folder/delete/' + id).success(function (result) {
                 if (result.success == true) {
                     $scope.items.splice(i, 1);
@@ -124,6 +135,40 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
         $scope.showCreateFolderRow = false;
     };
 
+    $scope.clickItem = function(i){
+        var item = $scope.items[i];
+        if(item.parent === undefined) {
+            //item is a file
+
+        } else {
+            //item is a folder
+            $scope.currentFolderPath += (item.name + "/");
+            $scope.currentFolderId = item.id;
+            $scope.history.push(item);
+            $scope.list();
+        }
+    };
+
+    $scope.clickHistory = function(i) {
+        $scope.history.splice(i + 1);
+
+        var item = $scope.history[i];
+        var tempNameArr = [];
+        for(var i=0; i<$scope.history.length; i++) {
+            tempNameArr[i] = $scope.history[i].name;
+        }
+        $scope.currentFolderPath = "/" + tempNameArr.join("/") + "/";
+        $scope.currentFolderId = item.id;
+        $scope.list();
+    };
+
+    $scope.clickHome = function() {
+        $scope.currentFolderId = -1;
+        $scope.currentFolderPath = "/";
+        $scope.history = [];
+        $scope.list();
+    };
+
 
 
     //init
@@ -149,7 +194,7 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
             onBeforeUploadItem: function (item) {
                 item.formData = [
                     {name: $scope.uploadDoc.name},
-                    {path: $scope.uploadDoc.path}
+                    {path: $scope.currentFolderPath}
                 ];
             },
             onAfterAddingFile: function (item) {
