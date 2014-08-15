@@ -24,7 +24,7 @@ public class WebDocDao {
     public List<WebDoc> list() {
         Session session = sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(WebDoc.class);
-        criteria.addOrder(Order.desc("updateTime"));
+        criteria.addOrder(Order.asc("name"));
         return criteria.list();
     }
 

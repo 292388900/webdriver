@@ -74,7 +74,6 @@ public class WebDoc {
     }
 
     @ManyToOne
-    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     public User getUser() {
         return user;
     }

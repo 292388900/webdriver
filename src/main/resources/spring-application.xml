@@ -34,12 +34,13 @@
             <list>
                 <value>com.zchen.webdriver.bean.WebDoc</value>
                 <value>com.zchen.webdriver.bean.User</value>
+                <value>com.zchen.webdriver.bean.Folder</value>
             </list>
         </property>
         <property name="hibernateProperties">
             <props>
-                <!--<prop key="hibernate.hbm2ddl.auto">create-drop</prop>-->
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+                <!--<prop key="hibernate.hbm2ddl.auto">update</prop>-->
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
                 <prop key="hibernate.show_sql">true</prop>
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>

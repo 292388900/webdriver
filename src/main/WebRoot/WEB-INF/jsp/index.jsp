@@ -50,6 +50,11 @@
             return resultSize + unit;
         }
     </script>
+    <style type="text/css">
+        .table tbody {
+            font-size: 13;
+        }
+    </style>
 </head>
 <body ng-controller="WebDocController">
 
@@ -121,7 +126,7 @@
 
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav">
-                            <li class>
+                            <li>
                                 <button type="button" class="btn btn-default btn-sm navbar-btn" data-toggle="modal" data-target="#myModal">
                                 <span class="glyphicon glyphicon-cloud-upload"></span> Upload
                                 </button>
@@ -142,9 +147,15 @@
                 <li><a href="#">Home</a></li>
                 <li><a href="#">Library</a></li>
                 <li class="active">Data</li>
+                <li><button class="btn-link" title="Create Folder" ng-click="openCreateFolderRow()">
+                    <span class="glyphicon glyphicon-plus-sign text-primary"></span>
+                    </button>
+                </li>
+
             </ol>
+
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover table-striped ">
                     <thead>
                     <tr>
                         <th class="col-md-5">Document Name</th>
@@ -155,8 +166,19 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <tr ng-show="showCreateFolderRow">
+                        <td>
+                            <div class="form-group-sm col-md-9 ">
+                                <input id="folderName" class="form-control input-sm" placeholder="New Folder" ng-model="folder.name" ng-blur="createFolder()">
+                            </div>
+                        </td>
+                        <td></td> <td></td> <td></td> <td></td>
+                    </tr>
                     <tr ng-repeat="doc in docs" ng-hide="doc.hidden" ng-mouseover="showActions($index)" ng-mouseleave="hideActions($index)" class="{{doc.highlight}}">
-                        <td title="{{doc.name}}" style="overflow:hidden; text-overflow: ellipsis;white-space:nowrap">{{doc.name}}</td>
+                        <td title="{{doc.name}}" style="overflow:hidden; text-overflow: ellipsis;white-space:nowrap">
+                            <span class="glyphicon glyphicon-file text-success" style="margin-right: 10px"></span>
+                            {{doc.name}}
+                        </td>
                         <td>
                             <button title="Download"  class="btn-link" ng-click="" ng-show="doc.showActions"><%--Fixme: change to directive--%>
                             <span class="text-danger glyphicon glyphicon-cloud-download"></span></button>
@@ -186,12 +208,14 @@
                         class="sr-only">Close</span></button>
                 <h4 class="modal-title" id="myModalLabel">Upload Document</h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body"  style="height: 300px">
                 <form class="form-horizontal" role="form" >
-                    <div class="form-group">
+                    <div class="form-group has-feedback has-{{uploadForm.nameColor}}">
                         <label for="name" class="col-sm-2 control-label">Name :</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" id="name" ng-model="uploadDoc.name">
+                            <input type="text" class="form-control" id="name" ng-model="uploadDoc.name" ng-blur="uploadNameValidation()" placeholder="be saved as document name ...">
+                            <span class="glyphicon glyphicon-{{uploadForm.nameSign}}  form-control-feedback"></span>
+                            <span class="help-block">{{uploadForm.nameTip}}</span>
                         </div>
                     </div>
                     <div class="form-group">
