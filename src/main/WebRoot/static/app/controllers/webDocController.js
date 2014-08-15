@@ -1,30 +1,45 @@
 app.controller('WebDocController', function ($scope, $http, FileUploader) {
 
-    $scope.docs = [];    //index doc list
-    $scope.uploadDoc = {name: '', path: '', file: ''};
+    $scope.items = [];    //item table
+    $scope.uploadDoc = {name: '', path: '', file: ''}; // doc in upload form
     $scope.uploadForm = {nameColor:'', nameSign:'', nameTip:''};
-    $scope.folder = {name: ''};
+    $scope.folder = {name: ''}; // folder for creating
     $scope.currentFolderId = 0;
 
     $scope.list = function () {
         $http.get('doc/list').success(function (data) {
             for (var i = 0; i < data.length; i++) {
-                data[i]['displayUploadTime'] = new Date(data[i].updateTime).format("yyyy-MM-dd hh:mm:ss");
-                data[i]['displaySize'] = CommonsUtils.prettySize(data[i].size);
+                var item = data[i];
+                if(item.parent === undefined) {//item is file
+                    item['displayUploadTime'] = new Date(item.updateTime).format("yyyy-MM-dd hh:mm:ss");
+                    item['displaySize'] = CommonUtils.prettySize(item.size);
+                }
             }
-            $scope.docs = data;
+            $scope.items = data;
         });
     };
 
     $scope.trash = function (i) {
-        var id = $scope.docs[i].id;
-        $http.post('doc/trash/' + id).success(function (result) {
-            if (result.success == true) {
-                $scope.docs.splice(i, 1);
-            } else {
-                alert("error");
-            }
-        });
+        var item = $scope.items[i];
+        var id = $scope.items[i].id;
+
+        if(item.parent === undefined) {//item is file
+            $http.get('doc/trash/' + id).success(function (result) {
+                if (result.success == true) {
+                    $scope.items.splice(i, 1);
+                } else {
+                    alert("error");
+                }
+            });
+        }else{      //item is folder
+            $http.get('folder/delete/' + id).success(function (result) {
+                if (result.success == true) {
+                    $scope.items.splice(i, 1);
+                } else {
+                    alert("error");
+                }
+            });
+        }
     };
 
     $scope.upload = function () {
@@ -33,7 +48,7 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
 
     $scope.search = function () {
         var searchKey = $scope.searchKey;
-        var docs = $scope.docs;
+        var docs = $scope.items;
         for (var i = 0; i < docs.length; i++) {
             if (searchKey == "") {
                 docs[i]['hidden'] = false;
@@ -49,10 +64,10 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
     };
 
     $scope.showActions = function (i) {
-        $scope.docs[i]['showActions'] = true;
+        $scope.items[i]['showActions'] = true;
     };
     $scope.hideActions = function (i) {
-        $scope.docs[i]['showActions'] = false;
+        $scope.items[i]['showActions'] = false;
     };
 
     $scope.uploadNameValidation = function () {
@@ -98,13 +113,14 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
         if ($scope.folder.name != "") {
             var postData = {
                 name: $scope.folder.name,
-                parentId: $scope.currentFolderId
+                parent : {id : $scope.currentFolderId}
             };
             $http.post("folder/create", postData)
                 .success(function (result) {
-                    $scope.docs.unshift(result.data);
-                });
+                    $scope.items.unshift(result.data);
+            });
         }
+        $scope.folder.name = "";
         $scope.showCreateFolderRow = false;
     };
 
@@ -120,11 +136,11 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
                     var doc = result.data;
                     //date time format
                     doc['displayUploadTime'] = new Date(doc.updateTime).format("yyyy-MM-dd hh:mm:ss");
-                    doc['displaySize'] = CommonsUtils.prettySize(doc.size);
+                    doc['displaySize'] = CommonUtils.prettySize(doc.size);
 
                     //add new doc record to first row
                     doc['highlight'] = "warning";
-                    $scope.docs.unshift(doc);
+                    $scope.items.unshift(doc);
                     $scope.uploadFormReset();
                 } else {
                     alert(result.message);

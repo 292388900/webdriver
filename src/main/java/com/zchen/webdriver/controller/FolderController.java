@@ -6,9 +6,10 @@ import com.zchen.webdriver.utils.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Zhouce Chen
@@ -23,12 +24,13 @@ public class FolderController {
     @Autowired
     private FolderService folderService;
 
+
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult createFolder(@RequestBody Integer parentId) {
+    public AjaxResult createFolder(@RequestBody Folder folder) {
         try {
-//            folderService.createFolder(folder, parentId);
-            return AjaxResult.get().success();
+            folderService.createFolder(folder);
+            return AjaxResult.get().success().setData(folder);
         } catch (Exception e) {
             logger.error("create folder failed.", e);
             return AjaxResult.get().failure();

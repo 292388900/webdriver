@@ -2,9 +2,11 @@ package com.zchen.webdriver.controller;
 
 import com.zchen.webdriver.bean.User;
 import com.zchen.webdriver.bean.WebDoc;
+import com.zchen.webdriver.service.FolderService;
 import com.zchen.webdriver.service.UserService;
 import com.zchen.webdriver.service.WebDocService;
 import com.zchen.webdriver.utils.AjaxResult;
+import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ public class WebDocController {
     private WebDocService webDocService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private FolderService folderService;
 
 
     @RequestMapping
@@ -41,7 +45,10 @@ public class WebDocController {
     @ResponseBody
     public List list() {
         try {
-            return webDocService.list();
+            List folders = folderService.list();
+            List docs = webDocService.list();
+            folders.addAll(docs);
+            return folders;
         } catch (Exception e) {
             e.printStackTrace();
         }

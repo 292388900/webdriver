@@ -16,40 +16,7 @@
         app = angular.module('myApp',['angularFileUpload']);
     </script>
     <script type="text/javascript" src="${ctx}/static/app/controllers/webDocController.js"></script>
-    <script type="text/javascript">
-        Date.prototype.format = function(fmt) {
-            var o = {
-                "M+" : this.getMonth()+1,                 //月份
-                "d+" : this.getDate(),                    //日
-                "h+" : this.getHours(),                   //小时
-                "m+" : this.getMinutes(),                 //分
-                "s+" : this.getSeconds(),                 //秒
-                "q+" : Math.floor((this.getMonth()+3)/3), //季度
-                "S"  : this.getMilliseconds()             //毫秒
-            };
-            if(/(y+)/.test(fmt))
-                fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-            for(var k in o)
-                if(new RegExp("("+ k +")").test(fmt))
-                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
-            return fmt;
-        };
-
-        function CommonsUtils() {
-        };
-        CommonsUtils.prettySize = function (size) {
-            var units = ['B', 'KB', 'MB', 'GB'];
-            var i = 0;
-            var resultSize = '0';
-            var unit = units[0];
-            while (size > 1024) {
-                unit = units[++i];
-                resultSize = Math.floor(size * 100 / 1024) / 100;
-                size = size / 1024;
-            }
-            return resultSize + unit;
-        }
-    </script>
+    <script type="text/javascript" src="${ctx}/static/app/utils/commons.js"></script>
     <style type="text/css">
         .table tbody {
             font-size: 13;
@@ -174,24 +141,25 @@
                         </td>
                         <td></td> <td></td> <td></td> <td></td>
                     </tr>
-                    <tr ng-repeat="doc in docs" ng-hide="doc.hidden" ng-mouseover="showActions($index)" ng-mouseleave="hideActions($index)" class="{{doc.highlight}}">
-                        <td title="{{doc.name}}" style="overflow:hidden; text-overflow: ellipsis;white-space:nowrap">
-                            <span class="glyphicon glyphicon-file text-success" style="margin-right: 10px"></span>
-                            {{doc.name}}
+                    <tr ng-repeat="item in items" ng-hide="item.hidden" ng-mouseover="showActions($index)" ng-mouseleave="hideActions($index)" class="{{item.highlight}}">
+                        <td title="{{item.name}}" style="overflow:hidden; text-overflow: ellipsis;white-space:nowrap">
+                            <span class="glyphicon glyphicon-folder-open text-success" style="margin-right: 10px" ng-show="item.parent !== undefined"></span>
+                            <span class="glyphicon glyphicon-file text-success" style="margin-right: 10px" ng-show="item.parent === undefined"></span>
+                            {{item.name}}
                         </td>
                         <td>
-                            <button title="Download"  class="btn-link" ng-click="" ng-show="doc.showActions"><%--Fixme: change to directive--%>
+                            <button title="Download"  class="btn-link" ng-click="" ng-show="item.showActions"><%--Fixme: change to directive--%>
                             <span class="text-danger glyphicon glyphicon-cloud-download"></span></button>
-                            <button title="Star"  class="btn-link" ng-click="" ng-show="doc.showActions"><%--Fixme: change to directive--%>
+                            <button title="Star"  class="btn-link" ng-click="" ng-show="item.showActions"><%--Fixme: change to directive--%>
                             <span class="text-danger glyphicon glyphicon-star"></span></button>
-                            <button title="Share"  class="btn-link" ng-click="" ng-show="doc.showActions"><%--Fixme: change to directive--%>
+                            <button title="Share"  class="btn-link" ng-click="" ng-show="item.showActions"><%--Fixme: change to directive--%>
                             <span class="text-danger glyphicon glyphicon-share-alt"></span></button>
-                            <button title="Delete"  class="btn-link" ng-click="trash($index)" ng-show="doc.showActions"><%--Fixme: change to directive--%>
+                            <button title="Delete"  class="btn-link" ng-click="trash($index)" ng-show="item.showActions"><%--Fixme: change to directive--%>
                             <span class="text-danger glyphicon glyphicon-trash"></span></button>
                         </td>
-                        <td>{{doc.displaySize}}</td>
-                        <td>{{doc.user.username}}</td>
-                        <td>{{doc.displayUploadTime}}</td>
+                        <td>{{item.displaySize}}</td>
+                        <td>{{item.user.username}}</td>
+                        <td>{{item.displayUploadTime}}</td>
                     </tr>
                     </tbody>
                 </table>

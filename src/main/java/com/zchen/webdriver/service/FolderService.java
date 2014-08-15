@@ -1,12 +1,16 @@
 package com.zchen.webdriver.service;
 
 import com.zchen.webdriver.bean.Folder;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author Zhouce Chen
@@ -20,10 +24,10 @@ public class FolderService {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void createFolder(Folder folder, int parentId) {
+    public void createFolder(Folder folder) {
         Session session = sessionFactory.getCurrentSession();
 
-        Folder parent = (Folder) session.get(Folder.class, parentId);
+        Folder parent = (Folder) session.get(Folder.class, folder.getParent().getId());
         folder.setParent(parent);
         session.save(folder);
     }
@@ -34,6 +38,12 @@ public class FolderService {
         session.delete(folder);
     }
 
+    public List list() {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(Folder.class);
+        criteria.add(Restrictions.isNull("parent"));
+        return criteria.list();
+    }
 
 
 
