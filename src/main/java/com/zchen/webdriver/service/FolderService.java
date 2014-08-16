@@ -26,21 +26,18 @@ public class FolderService {
     private FolderDao folderDao;
 
     public List list(Folder folder, int parentId){
-        Session session = sessionFactory.getCurrentSession();
-        Folder parent = (Folder) session.get(Folder.class, parentId);
+        Folder parent = (Folder) sessionFactory.getCurrentSession().load(Folder.class, parentId);
         folder.setParent(parent);
         return folderDao.query(folder, true);
     }
 
     public void create(Folder folder, int parentId) throws IOException {
         Session session = sessionFactory.getCurrentSession();
-
+        Folder parent = (Folder) session.load(Folder.class, parentId);
+        folder.setParent(parent);
         if (folderDao.query(folder, false).size() > 0) {
             throw new FileExistsException("Folder ["+ folder.getName() +"] has exists.");
         }
-
-        Folder parent = (Folder) session.get(Folder.class, parentId);
-        folder.setParent(parent);
         session.save(folder);
     }
 

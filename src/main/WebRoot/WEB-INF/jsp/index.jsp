@@ -17,7 +17,6 @@
         app.config(function($httpProvider){
             $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
             $httpProvider.defaults.transformRequest = function (data) {
-
                 return data?$.param(data):null;
             };
         });
@@ -101,7 +100,7 @@
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav">
                             <li>
-                                <button type="button" class="btn btn-default btn-sm navbar-btn" data-toggle="modal" data-target="#myModal">
+                                <button type="button" class="btn btn-default btn-sm navbar-btn" data-toggle="modal" data-target="#uploadModal">
                                 <span class="glyphicon glyphicon-cloud-upload"></span> Upload
                                 </button>
                             </li>
@@ -137,7 +136,6 @@
                         <th class="col-md-5">Document Name</th>
                         <th class="col-md-2"></th>
                         <th class="col-md-1">Size</th>
-                        <th class="col-md-1">Author</th>
                         <th class="col-md-2">Upload Time</th>
                     </tr>
                     </thead>
@@ -152,8 +150,8 @@
                     </tr>
                     <tr ng-repeat="item in items" ng-hide="item.hidden" ng-mouseover="showActions($index)" ng-mouseleave="hideActions($index)" class="{{item.highlight}}">
                         <td title="{{item.name}}" style="overflow:hidden; text-overflow: ellipsis;white-space:nowrap">
-                            <span class="glyphicon glyphicon-folder-open text-success" style="margin-right: 10px" ng-show="item.parent !== undefined"></span>
-                            <span class="glyphicon glyphicon-file text-success" style="margin-right: 10px" ng-show="item.parent === undefined"></span>
+                            <span class="glyphicon glyphicon-folder-open text-success" style="margin-right: 10px" ng-show="item.size === undefined"></span>
+                            <span class="glyphicon glyphicon-file text-success" style="margin-right: 10px" ng-show="item.size !== undefined"></span>
                             <button class="btn-link" style="color: #333" ng-click="clickItem($index)">{{item.name}}</button>
                         </td>
                         <td>
@@ -167,7 +165,6 @@
                             <span class="text-danger glyphicon glyphicon-trash"></span></button>
                         </td>
                         <td>{{item.displaySize}}</td>
-                        <td>{{item.user.username}}</td>
                         <td>{{item.displayUploadTime}}</td>
                     </tr>
                     </tbody>
@@ -177,37 +174,32 @@
     </div>
 </div>
 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-    <div class="modal-dialog">
+<div class="modal fade" id="uploadModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span><span
                         class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">Upload Document</h4>
+                <h4 class="modal-title">Upload Document</h4>
             </div>
-            <div class="modal-body"  style="height: 300px">
+            <div class="modal-body"  style="height: 200px">
                 <form class="form-horizontal" role="form" >
                     <div class="form-group has-feedback has-{{uploadForm.nameColor}}">
-                        <label for="name" class="col-sm-2 control-label">Name :</label>
+                        <label for="name" class="col-sm-2 control-label">File Name :</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" id="name" ng-model="uploadDoc.name" ng-blur="uploadNameValidation()" placeholder="be saved as document name ...">
+                            <input type="text" class="form-control" id="name" ng-model="uploadDoc.name" ng-blur="uploadNameValidation()">
                             <span class="glyphicon glyphicon-{{uploadForm.nameSign}}  form-control-feedback"></span>
                             <span class="help-block">{{uploadForm.nameTip}}</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="uploadFile" class="col-sm-2 control-label">File :</label>
+                        <label for="uploadFile" class="col-sm-2 control-label">Select File :</label>
                         <div class="col-md-8">
                             <input type="file"  id="uploadFile" nv-file-select uploader="uploader" name="uploadFile"
-                                   style="width: 300px; text-overflow: ellipsis;white-space:nowrap"/>
+                                   style="width: 600px; text-overflow: ellipsis;white-space:nowrap"/>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Path :</label>
-                        <div class="col-md-8">
-                            <p class="form-control-static">{{currentFolderPath}}</p>
-                        </div>
-                    </div>
+
                 </form>
             </div>
             <div class="modal-footer">

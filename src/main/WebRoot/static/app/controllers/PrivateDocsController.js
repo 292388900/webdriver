@@ -4,7 +4,7 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
     $scope.uploadDoc = {name: '', path: '', file: ''}; // doc in upload form
     $scope.uploadForm = {nameColor:'', nameSign:'', nameTip:''};
     $scope.folder = {name: ''}; // folder for creating
-    $scope.currentFolderId = -1;
+    $scope.currentFolderId = 1;
     $scope.currentFolderPath = "/";
     $scope.history = [];
 
@@ -16,7 +16,7 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
         $http.post('doc/list', postData).success(function (data) {
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
-                if(item.parent === undefined) {//item is file
+                if(item.size !== undefined) {//item is file
                     item['displayUploadTime'] = new Date(item.updateTime).format("yyyy-MM-dd hh:mm:ss");
                     item['displaySize'] = CommonUtils.prettySize(item.size);
                 }
@@ -28,9 +28,9 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
     $scope.trash = function (i) {
         var item = $scope.items[i];
         var id = $scope.items[i].id;
-        if(item.parent === undefined) {
+        if(item.size !== undefined) {
             //item is a file
-            $http.get('doc/trash/' + id).success(function (result) {
+            $http.get('doc/delete/' + id).success(function (result) {
                 if (result.success == true) {
                     $scope.items.splice(i, 1);
                 } else {
@@ -136,7 +136,7 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
 
     $scope.clickItem = function(i){
         var item = $scope.items[i];
-        if(item.parent === undefined) {
+        if(item.size !== undefined) {
             //item is a file
 
         } else {
@@ -162,7 +162,7 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
     };
 
     $scope.clickHome = function() {
-        $scope.currentFolderId = -1;
+        $scope.currentFolderId = 1;
         $scope.currentFolderPath = "/";
         $scope.history = [];
         $scope.list();
@@ -176,7 +176,7 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
             url: 'doc/upload',
             onSuccessItem: function (item, result) {
                 if (result.success == true) {
-                    $('#myModal').modal('hide');
+                    $('#uploadModal').modal('hide');
                     var doc = result.data;
                     //date time format
                     doc['displayUploadTime'] = new Date(doc.updateTime).format("yyyy-MM-dd hh:mm:ss");
@@ -204,6 +204,8 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
         });
         $scope.list();
         $scope.$watch("searchKey", $scope.search);
+
+        $('#uploadModal').on('hidden.bs.modal', $scope.uploadFormReset);
     }();
 
 });

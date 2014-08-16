@@ -37,7 +37,7 @@ public class WebDocService {
 
 
     public List<WebDoc> list(WebDoc doc, int folderId) {
-        Folder folder = (Folder) sessionFactory.getCurrentSession().get(Folder.class, folderId);
+        Folder folder = (Folder) sessionFactory.getCurrentSession().load(Folder.class, folderId);
         doc.setFolder(folder);
         return webDocDao.query(doc, false);
     }
@@ -64,7 +64,7 @@ public class WebDocService {
         doc.setSize(uploadFile.getSize());
         doc.setUpdateTime(new Date());
         doc.setSerialNum(serialNum);
-        doc.setFolder((Folder) session.get(Folder.class, folderId));
+        doc.setFolder((Folder) session.load(Folder.class, folderId));
         session.save(doc);
     }
 
@@ -73,7 +73,7 @@ public class WebDocService {
         Session session = sessionFactory.getCurrentSession();
         WebDoc doc = (WebDoc) session.get(WebDoc.class, id);
         //delete from disk
-        File file = FileUtils.getFile(configuration.getRootPath(), doc.getFolder().fetchPath(), doc.getName());
+        File file = FileUtils.getFile(configuration.getRootPath(), doc.getSerialNum());
         FileUtils.deleteQuietly(file);
 
         //delete from database

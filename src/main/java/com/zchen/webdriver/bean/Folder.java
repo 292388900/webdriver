@@ -1,6 +1,12 @@
 package com.zchen.webdriver.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
 
 /**
  * @author Zhouce Chen
@@ -37,7 +43,8 @@ public class Folder {
         this.name = name;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     public Folder getParent() {
         return parent;
     }
@@ -46,7 +53,7 @@ public class Folder {
         this.parent = parent;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     public User getUser() {
         return user;
     }

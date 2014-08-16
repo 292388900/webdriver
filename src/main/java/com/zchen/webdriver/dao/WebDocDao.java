@@ -48,6 +48,7 @@ public class WebDocDao {
         if (doc.getIsRemoved() != null) {
             criteria.add(Restrictions.eq("isRemoved", doc.getIsRemoved()));
         }
+        criteria.addOrder(Order.asc("name"));
         return criteria.list();
     }
 

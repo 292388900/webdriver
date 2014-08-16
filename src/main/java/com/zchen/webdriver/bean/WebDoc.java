@@ -1,6 +1,8 @@
 package com.zchen.webdriver.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
@@ -12,7 +14,7 @@ import java.util.Date;
  * @author Zhouce Chen
  * @version Aug 13, 2014
  */
-@Entity
+@Entity//Fixme: use hibernate entity
 public class WebDoc {
 
     private int id;
@@ -42,7 +44,7 @@ public class WebDoc {
         this.id = id;
     }
 
-    @Column(nullable = false) @OrderBy
+    @Column(nullable = false)
     public String getName() {
         return name;
     }
@@ -67,7 +69,7 @@ public class WebDoc {
         this.size = size;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     public User getUser() {
         return user;
     }
@@ -104,7 +106,8 @@ public class WebDoc {
         this.serialNum = serialNum;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     public Folder getFolder() {
         return folder;
     }

@@ -34,7 +34,7 @@ public class FolderController {
             folderService.create(folder, parentId);
             return AjaxResult.get().success().setData(folder);
         } catch (FileExistsException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(e.getMessage());
             return AjaxResult.get().failure().setMessage(e.getMessage());
         } catch (IOException e) {
             logger.error("create folder failed.", e);

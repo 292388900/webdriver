@@ -43,6 +43,7 @@
                 <!--<prop key="hibernate.hbm2ddl.auto">update</prop>-->
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
                 <prop key="hibernate.show_sql">true</prop>
+                <!--<prop key="hibernate.format_sql">true</prop>-->
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
                 <prop key="hibernate.cache.use_second_level_cache">true</prop>
                 <prop key="hibernate.cache.use_query_cache">true</prop>
@@ -56,6 +57,7 @@
     <context:component-scan base-package="com.zchen.webdriver"/>
     <tx:annotation-driven/>
 
+    <bean id="bootstrap" class="com.zchen.webdriver.core.Bootstrap" init-method="init" />
     <bean id="configuration" class="com.zchen.webdriver.core.Configuration">
         <property name="rootPath" value="${rootPath}"/>
     </bean>
