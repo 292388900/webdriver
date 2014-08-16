@@ -26,7 +26,6 @@ public class FolderController {
     @Autowired
     private FolderService folderService;
 
-
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult create(Folder folder, Integer parentId) {
@@ -38,7 +37,7 @@ public class FolderController {
             return AjaxResult.get().failure().setMessage(e.getMessage());
         } catch (IOException e) {
             logger.error("create folder failed.", e);
-            return AjaxResult.get().failure().setMessage(e.getMessage());
+            return AjaxResult.get().failure().setMessage("syste error");
         }
     }
 

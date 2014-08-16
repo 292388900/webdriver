@@ -3,39 +3,47 @@ package com.zchen.webdriver.bean;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.OrderBy;
 import java.util.Date;
 
 /**
  * @author Zhouce Chen
  * @version Aug 13, 2014
  */
-@Entity//Fixme: use hibernate entity
+@Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class WebDoc {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
     private String name;
 
     private String suffix;
 
     private long size;
 
-    private User user;
-
+    @Column(name = "update_time")
+    @Temporal(value = TemporalType.TIMESTAMP)
     private Date updateTime;
 
+    @Column(name = "is_removed")
     private Boolean isRemoved = false;
 
+    @Column(name = "serial_num")
     private String serialNum;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     private Folder folder;
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     public int getId() {
         return id;
     }
@@ -44,7 +52,7 @@ public class WebDoc {
         this.id = id;
     }
 
-    @Column(nullable = false)
+
     public String getName() {
         return name;
     }
@@ -69,7 +77,6 @@ public class WebDoc {
         this.size = size;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
     public User getUser() {
         return user;
     }
@@ -78,8 +85,6 @@ public class WebDoc {
         this.user = user;
     }
 
-    @Column(name = "update_time")
-    @Temporal(value = TemporalType.TIMESTAMP)
     public Date getUpdateTime() {
         return updateTime;
     }
@@ -88,7 +93,6 @@ public class WebDoc {
         this.updateTime = updateTime;
     }
 
-    @Column(name = "is_removed")
     public Boolean getIsRemoved() {
         return isRemoved;
     }
@@ -97,7 +101,6 @@ public class WebDoc {
         this.isRemoved = isRemoved;
     }
 
-    @Column(name = "serial_num")
     public String getSerialNum() {
         return serialNum;
     }
@@ -106,8 +109,6 @@ public class WebDoc {
         this.serialNum = serialNum;
     }
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
     public Folder getFolder() {
         return folder;
     }

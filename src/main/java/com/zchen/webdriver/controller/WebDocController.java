@@ -78,7 +78,7 @@ public class WebDocController {
             return AjaxResult.get().failure().setMessage(e.getMessage());
         } catch (Exception e) {
             logger.error("Upload failed.", e);
-            return AjaxResult.get().failure().setMessage(e.getMessage());
+            return AjaxResult.get().failure().setMessage("system error");
         }
     }
 

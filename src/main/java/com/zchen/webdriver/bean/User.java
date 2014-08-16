@@ -12,6 +12,7 @@ import java.util.Set;
 @Entity
 public class User {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String username;
@@ -19,7 +20,7 @@ public class User {
     private String password;
 
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     public int getId() {
         return id;
     }

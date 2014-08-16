@@ -15,22 +15,32 @@ import java.util.Set;
  * @version Aug 15, 2014
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Folder {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String name;
 
-    private Folder parent;
-
-    private User user;
-
+    @Column(name = "is_removed")
     private Boolean isRemoved = false;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Folder parent;
+
+    @JsonIgnore
+    @OneToMany
+    @JoinColumn(name = "parent_id")
+    @Cascade(value = CascadeType.DELETE)
     private List<Folder> folders;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     public int getId() {
         return id;
     }
@@ -47,8 +57,7 @@ public class Folder {
         this.name = name;
     }
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+
     public Folder getParent() {
         return parent;
     }
@@ -57,7 +66,6 @@ public class Folder {
         this.parent = parent;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
     public User getUser() {
         return user;
     }
@@ -70,7 +78,6 @@ public class Folder {
         return this.parent.fetchPath() + "/" + this.name;
     }
 
-    @Column(name = "is_removed")
     public Boolean getIsRemoved() {
         return isRemoved;
     }
@@ -79,10 +86,7 @@ public class Folder {
         this.isRemoved = isRemoved;
     }
 
-    @JsonIgnore
-    @OneToMany
-    @JoinColumn(name = "parent_id")
-    @Cascade(value = CascadeType.DELETE)
+
     public List<Folder> getFolders() {
         return folders;
     }
