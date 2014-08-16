@@ -25,10 +25,10 @@ public class FolderService {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void createFolder(Folder folder) {
+    public void createFolder(Folder folder, int parentId) {
         Session session = sessionFactory.getCurrentSession();
 
-        Folder parent = (Folder) session.get(Folder.class, folder.getParent().getId());
+        Folder parent = (Folder) session.get(Folder.class, parentId);
         folder.setParent(parent);
         session.save(folder);
     }

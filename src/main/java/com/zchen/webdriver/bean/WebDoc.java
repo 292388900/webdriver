@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
+import javax.persistence.OrderBy;
 import java.util.Date;
 
 /**
@@ -30,6 +31,8 @@ public class WebDoc {
 
     private boolean isRemoved;
 
+    private String serialNum;
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
@@ -39,7 +42,7 @@ public class WebDoc {
         this.id = id;
     }
 
-    @Column(nullable = false)
+    @Column(nullable = false) @OrderBy
     public String getName() {
         return name;
     }
@@ -98,5 +101,14 @@ public class WebDoc {
 
     public void setRemoved(boolean isRemoved) {
         this.isRemoved = isRemoved;
+    }
+
+    @Column(name = "serial_num")
+    public String getSerialNum() {
+        return serialNum;
+    }
+
+    public void setSerialNum(String serialNum) {
+        this.serialNum = serialNum;
     }
 }

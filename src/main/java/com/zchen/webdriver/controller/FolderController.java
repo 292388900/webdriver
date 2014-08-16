@@ -27,9 +27,9 @@ public class FolderController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult createFolder(@RequestBody Folder folder) {
+    public AjaxResult createFolder(Folder folder, Integer parentId) {
         try {
-            folderService.createFolder(folder);
+            folderService.createFolder(folder, parentId);
             return AjaxResult.get().success().setData(folder);
         } catch (Exception e) {
             logger.error("create folder failed.", e);

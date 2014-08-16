@@ -6,7 +6,8 @@ import com.zchen.webdriver.service.FolderService;
 import com.zchen.webdriver.service.UserService;
 import com.zchen.webdriver.service.WebDocService;
 import com.zchen.webdriver.utils.AjaxResult;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.io.FileExistsException;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,8 +73,11 @@ public class WebDocController {
     @ResponseBody
     public AjaxResult upload(WebDoc doc, MultipartFile file) {
         try {
-            webDocService.save(doc, file);//Fixme
+            webDocService.save(doc, file);
             return AjaxResult.get().success().setData(doc);
+        } catch (FileExistsException e) {
+            logger.error(e.getMessage());
+            return AjaxResult.get().failure().setMessage(e.getMessage());
         } catch (Exception e) {
             logger.error("Upload failed.", e);
             return AjaxResult.get().failure().setMessage(e.getMessage());

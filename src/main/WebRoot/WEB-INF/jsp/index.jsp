@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="ctx">${pageContext.request.contextPath}</c:set>
 <html ng-app="myApp">
@@ -14,6 +14,12 @@
     <script type="text/javascript" src="${ctx}/static/js/angluar-file-upload.js"></script>
     <script type="text/javascript">
         app = angular.module('myApp',['angularFileUpload']);
+        app.config(function($httpProvider){
+            $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+            $httpProvider.defaults.transformRequest = function (data) {
+                return $.param(data);
+            };
+        });
     </script>
     <script type="text/javascript" src="${ctx}/static/app/controllers/webDocController.js"></script>
     <script type="text/javascript" src="${ctx}/static/app/utils/commons.js"></script>
@@ -103,7 +109,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
-                                    <input class="form-control input-sm" placeholder="Search ..." ng-model="searchKey" ng-change="search()">
+                                    <input class="form-control input-sm" placeholder="Search ..." ng-model="searchKey">
                                 </div>
                             </div>
                         </form>

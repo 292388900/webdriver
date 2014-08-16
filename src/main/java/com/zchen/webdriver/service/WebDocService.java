@@ -3,18 +3,13 @@ package com.zchen.webdriver.service;
 import com.zchen.webdriver.bean.WebDoc;
 import com.zchen.webdriver.core.Configuration;
 import com.zchen.webdriver.dao.WebDocDao;
+import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,19 +36,23 @@ public class WebDocService {
 
 
     public List<WebDoc> list(WebDoc doc) {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria criteria = session.createCriteria(WebDoc.class);
-        criteria.add(Restrictions.eq("path", doc.getPath()));
-        criteria.addOrder(Order.asc("name"));
-        return criteria.list();
+        return webDocDao.query(doc);
     }
 
     public void save(WebDoc doc, MultipartFile uploadFile) throws IOException {
-        //persist file to disk
+        Session session = sessionFactory.getCurrentSession();
+
         String rootPath = configuration.getRootPath();
         String fileSuffix = FilenameUtils.getExtension(uploadFile.getOriginalFilename());
         String fileName = FilenameUtils.getBaseName(doc.getName()) + "." + fileSuffix;
-        File destFile = FileUtils.getFile(rootPath, fileName);
+        String serialNum = RandomStringUtils.randomAlphanumeric(30);
+
+        if (webDocDao.query(doc).size() > 0) {
+            throw new FileExistsException("Document ["+ fileName +"] has exists.");
+        }
+
+        //persist file to disk
+        File destFile = FileUtils.getFile(rootPath, serialNum);
         uploadFile.transferTo(destFile);
 
         //save to database
@@ -61,7 +60,8 @@ public class WebDocService {
         doc.setSuffix(fileSuffix);
         doc.setSize(uploadFile.getSize());
         doc.setUpdateTime(new Date());
-        sessionFactory.getCurrentSession().save(doc);
+        doc.setSerialNum(serialNum);
+        session.save(doc);
     }
 
 

@@ -13,10 +13,7 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
             path : $scope.currentFolderPath,
             parentId : $scope.currentFolderId
         };
-        $http({
-            url : 'doc/list',
-            params : postData
-        }).success(function (data) {
+        $http.post('doc/list', postData).success(function (data) {
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
                 if(item.parent === undefined) {//item is file
@@ -71,7 +68,6 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
                 docs[i]['hidden'] = true;
             }
         }
-
     };
 
     $scope.showActions = function (i) {
@@ -124,7 +120,7 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
         if ($scope.folder.name != "") {
             var postData = {
                 name: $scope.folder.name,
-                parent : {id : $scope.currentFolderId}
+                parentId : $scope.currentFolderId
             };
             $http.post("folder/create", postData)
                 .success(function (result) {
@@ -204,6 +200,7 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
             }
         });
         $scope.list();
+        $scope.$watch("searchKey", $scope.search);
     }();
 
 });

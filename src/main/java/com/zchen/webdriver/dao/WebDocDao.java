@@ -1,10 +1,13 @@
 package com.zchen.webdriver.dao;
 
 import com.zchen.webdriver.bean.WebDoc;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -21,10 +24,21 @@ public class WebDocDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public List<WebDoc> list() {
+    public List<WebDoc> query(WebDoc doc) {
         Session session = sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(WebDoc.class);
-        criteria.addOrder(Order.asc("name"));
+        if (StringUtils.isNotEmpty(doc.getName())) {
+            criteria.add(Restrictions.like("name", doc.getName(), MatchMode.ANYWHERE));
+        }
+        if (StringUtils.isNotEmpty(doc.getPath())) {
+            criteria.add(Restrictions.eq("path", doc.getPath()));
+        }
+        if (StringUtils.isNotEmpty(doc.getSuffix())) {
+            criteria.add(Restrictions.eq("suffix", doc.getSuffix()));
+        }
+        if (doc.getUser() != null) {
+            criteria.add(Restrictions.eq("user",  doc.getUser()));
+        }
         return criteria.list();
     }
 
