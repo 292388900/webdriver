@@ -1,4 +1,4 @@
-app.controller('WebDocController', function ($scope, $http, FileUploader) {
+app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
 
     $scope.items = [];    //item table
     $scope.uploadDoc = {name: '', path: '', file: ''}; // doc in upload form
@@ -10,8 +10,8 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
 
     $scope.list = function () {
         var postData = {
-            path : $scope.currentFolderPath,
-            parentId : $scope.currentFolderId
+            parentId : $scope.currentFolderId,
+            isRemoved : false
         };
         $http.post('doc/list', postData).success(function (data) {
             for (var i = 0; i < data.length; i++) {
@@ -28,7 +28,6 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
     $scope.trash = function (i) {
         var item = $scope.items[i];
         var id = $scope.items[i].id;
-
         if(item.parent === undefined) {
             //item is a file
             $http.get('doc/trash/' + id).success(function (result) {
@@ -190,7 +189,7 @@ app.controller('WebDocController', function ($scope, $http, FileUploader) {
             onBeforeUploadItem: function (item) {
                 item.formData = [
                     {name: $scope.uploadDoc.name},
-                    {path: $scope.currentFolderPath}
+                    {folderId: $scope.currentFolderId}
                 ];
             },
             onAfterAddingFile: function (item) {

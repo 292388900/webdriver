@@ -21,17 +21,17 @@ public class WebDoc {
 
     private String suffix;
 
-    private String path;
-
     private long size;
 
     private User user;
 
     private Date updateTime;
 
-    private boolean isRemoved;
+    private Boolean isRemoved = false;
 
     private String serialNum;
+
+    private Folder folder;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
@@ -57,15 +57,6 @@ public class WebDoc {
 
     public void setSuffix(String suffix) {
         this.suffix = suffix;
-    }
-
-    @Column(nullable = false)
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     public long getSize() {
@@ -95,11 +86,12 @@ public class WebDoc {
         this.updateTime = updateTime;
     }
 
-    public boolean isRemoved() {
+    @Column(name = "is_removed")
+    public Boolean getIsRemoved() {
         return isRemoved;
     }
 
-    public void setRemoved(boolean isRemoved) {
+    public void setIsRemoved(Boolean isRemoved) {
         this.isRemoved = isRemoved;
     }
 
@@ -110,5 +102,14 @@ public class WebDoc {
 
     public void setSerialNum(String serialNum) {
         this.serialNum = serialNum;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    public Folder getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Folder folder) {
+        this.folder = folder;
     }
 }

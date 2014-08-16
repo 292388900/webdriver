@@ -17,11 +17,12 @@
         app.config(function($httpProvider){
             $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
             $httpProvider.defaults.transformRequest = function (data) {
-                return $.param(data);
+
+                return data?$.param(data):null;
             };
         });
     </script>
-    <script type="text/javascript" src="${ctx}/static/app/controllers/webDocController.js"></script>
+    <script type="text/javascript" src="${ctx}/static/app/controllers/PrivateDocsController.js"></script>
     <script type="text/javascript" src="${ctx}/static/app/utils/commons.js"></script>
     <style type="text/css">
         .table tbody {
@@ -29,7 +30,7 @@
         }
     </style>
 </head>
-<body ng-controller="WebDocController">
+<body ng-controller="PrivateDocsController">
 
 
 

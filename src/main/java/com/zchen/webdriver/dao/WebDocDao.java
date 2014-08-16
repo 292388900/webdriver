@@ -30,14 +30,19 @@ public class WebDocDao {
         if (StringUtils.isNotEmpty(doc.getName())) {
             criteria.add(Restrictions.like("name", doc.getName(), MatchMode.ANYWHERE));
         }
-        if (StringUtils.isNotEmpty(doc.getPath())) {
-            criteria.add(Restrictions.eq("path", doc.getPath()));
+        if (doc.getFolder() != null) {
+            criteria.add(Restrictions.eq("folder", doc.getFolder()));
+        } else {
+            criteria.add(Restrictions.isNull("folder"));
         }
         if (StringUtils.isNotEmpty(doc.getSuffix())) {
             criteria.add(Restrictions.eq("suffix", doc.getSuffix()));
         }
         if (doc.getUser() != null) {
             criteria.add(Restrictions.eq("user",  doc.getUser()));
+        }
+        if (doc.getIsRemoved() != null) {
+            criteria.add(Restrictions.eq("isRemoved", doc.getIsRemoved()));
         }
         return criteria.list();
     }

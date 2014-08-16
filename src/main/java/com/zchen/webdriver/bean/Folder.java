@@ -17,6 +17,8 @@ public class Folder {
 
     private User user;
 
+    private Boolean isRemoved = false;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
@@ -35,7 +37,7 @@ public class Folder {
         this.name = name;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     public Folder getParent() {
         return parent;
     }
@@ -51,5 +53,18 @@ public class Folder {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String fetchPath() {
+        return this.parent.fetchPath() + "/" + this.name;
+    }
+
+    @Column(name = "is_removed")
+    public Boolean getIsRemoved() {
+        return isRemoved;
+    }
+
+    public void setIsRemoved(Boolean isRemoved) {
+        this.isRemoved = isRemoved;
     }
 }

@@ -1,5 +1,6 @@
 package com.zchen.webdriver.service;
 
+import com.zchen.webdriver.bean.Folder;
 import com.zchen.webdriver.bean.WebDoc;
 import com.zchen.webdriver.core.Configuration;
 import com.zchen.webdriver.dao.WebDocDao;
@@ -35,11 +36,13 @@ public class WebDocService {
     private Configuration configuration;
 
 
-    public List<WebDoc> list(WebDoc doc) {
+    public List<WebDoc> list(WebDoc doc, int folderId) {
+        Folder folder = (Folder) sessionFactory.getCurrentSession().get(Folder.class, folderId);
+        doc.setFolder(folder);
         return webDocDao.query(doc);
     }
 
-    public void save(WebDoc doc, MultipartFile uploadFile) throws IOException {
+    public void save(WebDoc doc, int folderId ,MultipartFile uploadFile) throws IOException {
         Session session = sessionFactory.getCurrentSession();
 
         String rootPath = configuration.getRootPath();
@@ -61,6 +64,7 @@ public class WebDocService {
         doc.setSize(uploadFile.getSize());
         doc.setUpdateTime(new Date());
         doc.setSerialNum(serialNum);
+        doc.setFolder((Folder) session.get(Folder.class, folderId));
         session.save(doc);
     }
 
@@ -69,7 +73,7 @@ public class WebDocService {
         Session session = sessionFactory.getCurrentSession();
         WebDoc doc = (WebDoc) session.get(WebDoc.class, id);
         //delete from disk
-        File file = FileUtils.getFile(configuration.getRootPath(), doc.getPath(), doc.getName());
+        File file = FileUtils.getFile(configuration.getRootPath(), doc.getFolder().fetchPath(), doc.getName());
         FileUtils.deleteQuietly(file);
 
         //delete from database
@@ -84,7 +88,7 @@ public class WebDocService {
     public void trash(int id) {
         Session session = sessionFactory.getCurrentSession();
         WebDoc doc = (WebDoc) session.get(WebDoc.class, id);
-        doc.setRemoved(true);
+        doc.setIsRemoved(true);
     }
 
 }

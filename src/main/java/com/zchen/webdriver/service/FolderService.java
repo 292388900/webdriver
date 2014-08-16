@@ -25,7 +25,7 @@ public class FolderService {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void createFolder(Folder folder, int parentId) {
+    public void create(Folder folder, int parentId) {
         Session session = sessionFactory.getCurrentSession();
 
         Folder parent = (Folder) session.get(Folder.class, parentId);
@@ -33,13 +33,13 @@ public class FolderService {
         session.save(folder);
     }
 
-    public void deleteFolder(int id) {
+    public void delete(int id) {
         Session session = sessionFactory.getCurrentSession();
         Folder folder = (Folder) session.get(Folder.class, id);
         session.delete(folder);
     }
 
-    public List list(int parentId) {
+    public List list(Folder folder, int parentId) {
         Session session = sessionFactory.getCurrentSession();
         Folder parent = (Folder) session.get(Folder.class, parentId);
 
@@ -53,7 +53,11 @@ public class FolderService {
         return criteria.list();
     }
 
-
+    public void trash(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        Folder folder = (Folder) session.get(Folder.class, id);
+        folder.setIsRemoved(true);
+    }
 
 
 }

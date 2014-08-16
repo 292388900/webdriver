@@ -1,5 +1,6 @@
 package com.zchen.webdriver.controller;
 
+import com.zchen.webdriver.bean.Folder;
 import com.zchen.webdriver.bean.User;
 import com.zchen.webdriver.bean.WebDoc;
 import com.zchen.webdriver.service.FolderService;
@@ -44,10 +45,10 @@ public class WebDocController {
 
     @RequestMapping("/list")
     @ResponseBody
-    public List list(WebDoc doc, int parentId) {
+    public List list(WebDoc doc, Folder folder, int parentId) {
         try {
-            List folders = folderService.list(parentId);
-            List docs = webDocService.list(doc);
+            List folders = folderService.list(folder ,parentId);
+            List docs = webDocService.list(doc, parentId);
             folders.addAll(docs);
             return folders;
         } catch (Exception e) {
@@ -71,9 +72,9 @@ public class WebDocController {
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult upload(WebDoc doc, MultipartFile file) {
+    public AjaxResult upload(WebDoc doc, Integer folderId ,MultipartFile file) {
         try {
-            webDocService.save(doc, file);
+            webDocService.save(doc, folderId ,file);
             return AjaxResult.get().success().setData(doc);
         } catch (FileExistsException e) {
             logger.error(e.getMessage());

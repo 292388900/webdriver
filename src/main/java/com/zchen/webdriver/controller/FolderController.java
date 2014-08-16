@@ -27,9 +27,9 @@ public class FolderController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult createFolder(Folder folder, Integer parentId) {
+    public AjaxResult create(Folder folder, Integer parentId) {
         try {
-            folderService.createFolder(folder, parentId);
+            folderService.create(folder, parentId);
             return AjaxResult.get().success().setData(folder);
         } catch (Exception e) {
             logger.error("create folder failed.", e);
@@ -39,9 +39,9 @@ public class FolderController {
 
     @RequestMapping("/delete/{id}")
     @ResponseBody
-    public AjaxResult deleteFolder(@PathVariable int id) {
+    public AjaxResult delete(@PathVariable int id) {
         try {
-            folderService.deleteFolder(id);
+            folderService.delete(id);
             return AjaxResult.get().success();
         } catch (Exception e) {
             logger.error("delete folder failed.", e);
@@ -49,5 +49,15 @@ public class FolderController {
         }
     }
 
-
+    @RequestMapping("/trash/{id}")
+    @ResponseBody
+    public AjaxResult trash(@PathVariable int id) {
+        try {
+            folderService.trash(id);
+            return AjaxResult.get().success();
+        } catch (Exception e) {
+            logger.error("delete folder failed.", e);
+            return AjaxResult.get().failure();
+        }
+    }
 }
