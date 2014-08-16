@@ -39,7 +39,7 @@ public class WebDocService {
     public List<WebDoc> list(WebDoc doc, int folderId) {
         Folder folder = (Folder) sessionFactory.getCurrentSession().get(Folder.class, folderId);
         doc.setFolder(folder);
-        return webDocDao.query(doc);
+        return webDocDao.query(doc, false);
     }
 
     public void save(WebDoc doc, int folderId ,MultipartFile uploadFile) throws IOException {
@@ -50,7 +50,7 @@ public class WebDocService {
         String fileName = FilenameUtils.getBaseName(doc.getName()) + "." + fileSuffix;
         String serialNum = RandomStringUtils.randomAlphanumeric(30);
 
-        if (webDocDao.query(doc).size() > 0) {
+        if (webDocDao.query(doc, true).size() > 0) {
             throw new FileExistsException("Document ["+ fileName +"] has exists.");
         }
 

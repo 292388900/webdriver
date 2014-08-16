@@ -1,16 +1,15 @@
 package com.zchen.webdriver.service;
 
 import com.zchen.webdriver.bean.Folder;
-import org.hibernate.Criteria;
+import com.zchen.webdriver.dao.FolderDao;
+import org.apache.commons.io.FileExistsException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -21,12 +20,24 @@ import java.util.List;
 @Transactional
 public class FolderService {
 
-
     @Autowired
     private SessionFactory sessionFactory;
+    @Autowired
+    private FolderDao folderDao;
 
-    public void create(Folder folder, int parentId) {
+    public List list(Folder folder, int parentId){
         Session session = sessionFactory.getCurrentSession();
+        Folder parent = (Folder) session.get(Folder.class, parentId);
+        folder.setParent(parent);
+        return folderDao.query(folder, true);
+    }
+
+    public void create(Folder folder, int parentId) throws IOException {
+        Session session = sessionFactory.getCurrentSession();
+
+        if (folderDao.query(folder, false).size() > 0) {
+            throw new FileExistsException("Folder ["+ folder.getName() +"] has exists.");
+        }
 
         Folder parent = (Folder) session.get(Folder.class, parentId);
         folder.setParent(parent);
@@ -39,19 +50,7 @@ public class FolderService {
         session.delete(folder);
     }
 
-    public List list(Folder folder, int parentId) {
-        Session session = sessionFactory.getCurrentSession();
-        Folder parent = (Folder) session.get(Folder.class, parentId);
 
-        Criteria criteria = session.createCriteria(Folder.class);
-        if (parent == null) {
-            criteria.add(Restrictions.isNull("parent"));
-        } else {
-            criteria.add(Restrictions.eq("parent", parent));
-        }
-        criteria.addOrder(Order.asc("name"));
-        return criteria.list();
-    }
 
     public void trash(int id) {
         Session session = sessionFactory.getCurrentSession();

@@ -123,7 +123,11 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
             };
             $http.post("folder/create", postData)
                 .success(function (result) {
-                    $scope.items.unshift(result.data);
+                    if(result.success == true) {
+                        $scope.items.unshift(result.data);
+                    }else {
+                        alert(result.message);
+                    }
             });
         }
         $scope.folder.name = "";

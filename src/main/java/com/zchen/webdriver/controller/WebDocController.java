@@ -1,18 +1,15 @@
 package com.zchen.webdriver.controller;
 
 import com.zchen.webdriver.bean.Folder;
-import com.zchen.webdriver.bean.User;
 import com.zchen.webdriver.bean.WebDoc;
 import com.zchen.webdriver.service.FolderService;
 import com.zchen.webdriver.service.UserService;
 import com.zchen.webdriver.service.WebDocService;
 import com.zchen.webdriver.utils.AjaxResult;
 import org.apache.commons.io.FileExistsException;
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +44,7 @@ public class WebDocController {
     @ResponseBody
     public List list(WebDoc doc, Folder folder, int parentId) {
         try {
-            List folders = folderService.list(folder ,parentId);
+            List folders = folderService.list(folder, parentId);
             List docs = webDocService.list(doc, parentId);
             folders.addAll(docs);
             return folders;

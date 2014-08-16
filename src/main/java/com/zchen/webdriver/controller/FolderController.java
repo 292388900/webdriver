@@ -3,12 +3,14 @@ package com.zchen.webdriver.controller;
 import com.zchen.webdriver.bean.Folder;
 import com.zchen.webdriver.service.FolderService;
 import com.zchen.webdriver.utils.AjaxResult;
+import org.apache.commons.io.FileExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -31,9 +33,12 @@ public class FolderController {
         try {
             folderService.create(folder, parentId);
             return AjaxResult.get().success().setData(folder);
-        } catch (Exception e) {
+        } catch (FileExistsException e) {
+            logger.error(e.getMessage(), e);
+            return AjaxResult.get().failure().setMessage(e.getMessage());
+        } catch (IOException e) {
             logger.error("create folder failed.", e);
-            return AjaxResult.get().failure();
+            return AjaxResult.get().failure().setMessage(e.getMessage());
         }
     }
 

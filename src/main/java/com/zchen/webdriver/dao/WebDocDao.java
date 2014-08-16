@@ -24,11 +24,15 @@ public class WebDocDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public List<WebDoc> query(WebDoc doc) {
+    public List<WebDoc> query(WebDoc doc, boolean isLike) {
         Session session = sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(WebDoc.class);
         if (StringUtils.isNotEmpty(doc.getName())) {
-            criteria.add(Restrictions.like("name", doc.getName(), MatchMode.ANYWHERE));
+            if (isLike) {
+                criteria.add(Restrictions.like("name", doc.getName(), MatchMode.ANYWHERE));
+            }else{
+                criteria.add(Restrictions.eq("name", doc.getName()));
+            }
         }
         if (doc.getFolder() != null) {
             criteria.add(Restrictions.eq("folder", doc.getFolder()));
