@@ -2,7 +2,9 @@ package com.zchen.webdriver.service;
 
 import com.zchen.webdriver.bean.Folder;
 import com.zchen.webdriver.dao.FolderDao;
+import net.sf.ehcache.hibernate.HibernateUtil;
 import org.apache.commons.io.FileExistsException;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Zhouce Chen
@@ -25,10 +28,12 @@ public class FolderService {
     @Autowired
     private FolderDao folderDao;
 
-    public List list(Folder folder, int parentId){
-        Folder parent = (Folder) sessionFactory.getCurrentSession().load(Folder.class, parentId);
-        folder.setParent(parent);
-        return folderDao.query(folder, true);
+    public List list(Folder folder, int parentId) {
+        Session session = sessionFactory.getCurrentSession();
+        Folder parent = (Folder) session.get(Folder.class, parentId);
+        List<Folder> folders = parent.getFolders();
+        Hibernate.initialize(folders);
+        return folders;
     }
 
     public void create(Folder folder, int parentId) throws IOException {

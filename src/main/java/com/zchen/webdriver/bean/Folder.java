@@ -7,6 +7,8 @@ import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Zhouce Chen
@@ -24,6 +26,8 @@ public class Folder {
     private User user;
 
     private Boolean isRemoved = false;
+
+    private List<Folder> folders;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,5 +77,17 @@ public class Folder {
 
     public void setIsRemoved(Boolean isRemoved) {
         this.isRemoved = isRemoved;
+    }
+
+    @JsonIgnore
+    @OneToMany
+    @JoinColumn(name = "parent_id")
+    @Cascade(value = CascadeType.DELETE)
+    public List<Folder> getFolders() {
+        return folders;
+    }
+
+    public void setFolders(List<Folder> folders) {
+        this.folders = folders;
     }
 }
