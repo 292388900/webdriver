@@ -62,7 +62,7 @@ public class WebDocService {
         doc.setName(fileName);
         doc.setSuffix(fileSuffix);
         doc.setSize(uploadFile.getSize());
-        doc.setUpdateTime(new Date());
+        doc.setUploadTime(new Date());
         doc.setSerialNum(serialNum);
         doc.setFolder((Folder) session.load(Folder.class, folderId));
         session.save(doc);

@@ -13,8 +13,10 @@
     <script type="text/javascript" src="static/bootstrap/js/bootstrap.js"></script>
     <script type="text/javascript" src="static/js/angular.min.js"></script>
     <script type="text/javascript" src="static/js/angular-file-upload.js"></script>
+    <%--app js files--%>
     <script type="text/javascript" src="static/app/base.js"></script>
-    <script type="text/javascript" src="static/app/controllers/PrivateDocsController.js"></script>
+    <script type="text/javascript" src="static/app/filters.js"></script>
+    <script type="text/javascript" src="static/app/controller/PrivateDocsController.js"></script>
 
 </head>
 
@@ -116,7 +118,7 @@
             </ol>
 
             <div class="table-responsive">
-                <table class="table table-hover table-striped ">
+                <table class="table table-hover ">
                     <thead>
                     <tr>
                         <th class="col-md-5">Document Name</th>
@@ -150,8 +152,8 @@
                             <button title="Delete"  class="btn-link" ng-click="trash($index)" ng-show="item.showActions"><%--Fixme: change to directive--%>
                             <span class="text-danger glyphicon glyphicon-trash"></span></button>
                         </td>
-                        <td>{{item.displaySize}}</td>
-                        <td>{{item.displayUploadTime}}</td>
+                        <td>{{item.size|prettySize}}</td>
+                        <td>{{item.uploadTime|dateFormatter:'yyyy-MM-dd hh:mm:ss'}}</td>
                     </tr>
                     </tbody>
                 </table>

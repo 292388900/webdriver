@@ -28,7 +28,7 @@ public class WebDoc {
 
     @Column(name = "update_time")
     @Temporal(value = TemporalType.TIMESTAMP)
-    private Date updateTime;
+    private Date uploadTime;
 
     @Column(name = "is_removed")
     private Boolean isRemoved = false;
@@ -76,12 +76,12 @@ public class WebDoc {
         this.size = size;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public Date getUploadTime() {
+        return uploadTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setUploadTime(Date uploadTime) {
+        this.uploadTime = uploadTime;
     }
 
     public Boolean getIsRemoved() {

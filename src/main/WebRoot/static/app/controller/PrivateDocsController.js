@@ -14,13 +14,6 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
             isRemoved : false
         };
         $http.post('doc/list', postData).success(function (data) {
-            for (var i = 0; i < data.length; i++) {
-                var item = data[i];
-                if(item.size !== undefined) {//item is file
-                    item['displayUploadTime'] = new Date(item.updateTime).format("yyyy-MM-dd hh:mm:ss");
-                    item['displaySize'] = CommonUtils.prettySize(item.size);
-                }
-            }
             $scope.items = data;
         });
     };
@@ -178,9 +171,6 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
                 if (result.success == true) {
                     $('#uploadModal').modal('hide');
                     var doc = result.data;
-                    //date time format
-                    doc['displayUploadTime'] = new Date(doc.updateTime).format("yyyy-MM-dd hh:mm:ss");
-                    doc['displaySize'] = CommonUtils.prettySize(doc.size);
 
                     //add new doc record to first row
                     doc['highlight'] = "warning";
