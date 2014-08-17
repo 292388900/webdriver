@@ -22,10 +22,10 @@ import java.util.List;
  * @version Aug 13, 2014
  */
 @Controller
-@RequestMapping("/doc")
-public class WebDocController {
+@RequestMapping("/private")
+public class PrivateZoneController {
 
-    private Logger logger = LoggerFactory.getLogger(WebDocController.class);
+    private Logger logger = LoggerFactory.getLogger(PrivateZoneController.class);
 
     @Autowired
     private WebDocService webDocService;
@@ -37,7 +37,7 @@ public class WebDocController {
 
     @RequestMapping
     public String index(ModelMap map) {
-        return "index";
+        return "private_zone";
     }
 
     @RequestMapping("/list")

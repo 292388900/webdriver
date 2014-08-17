@@ -27,7 +27,6 @@ app.filter('prettySize', function(){
 app.filter('dateFormatter',function(){
    return function(longDate, pattern) {
        if(longDate == null) return;
-       console.log(longDate);
        var date = new Date(longDate);
        var o = {
            "M+" : date.getMonth()+1,

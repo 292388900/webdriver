@@ -1,19 +1,18 @@
-app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
+app.controller('PrivateZoneController', function ($scope, $http, FileUploader) {
 
     $scope.items = [];    //item table
-    $scope.uploadDoc = {name: '', path: '', file: ''}; // doc in upload form
+    $scope.uploadDoc = {name: '', file: ''}; // doc in upload form
     $scope.uploadForm = {nameColor:'', nameSign:'', nameTip:''};
     $scope.folder = {name: ''}; // folder for creating
     $scope.currentFolderId = 1;
-    $scope.currentFolderPath = "/";
-    $scope.history = [];
+    $scope.trace = [];
 
     $scope.list = function () {
         var postData = {
             parentId : $scope.currentFolderId,
             isRemoved : false
         };
-        $http.post('doc/list', postData).success(function (data) {
+        $http.post('private/list', postData).success(function (data) {
             $scope.items = data;
         });
     };
@@ -23,7 +22,7 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
         var id = $scope.items[i].id;
         if(item.size !== undefined) {
             //item is a file
-            $http.get('doc/delete/' + id).success(function (result) {
+            $http.get('private/delete/' + id).success(function (result) {
                 if (result.success == true) {
                     $scope.items.splice(i, 1);
                 } else {
@@ -97,7 +96,7 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
     };
 
     $scope.uploadFormReset = function(){
-        $scope.uploadDoc = {name: '', path: '', file: ''};
+        $scope.uploadDoc = {name: '', file: ''};
         $scope.uploadForm = {nameColor:'', nameSign:'', nameTip:''};
     };
 
@@ -134,39 +133,23 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
 
         } else {
             //item is a folder
-            $scope.currentFolderPath += (item.name + "/");
-            $scope.currentFolderId = item.id;
-            $scope.history.push(item);
-            $scope.list();
+            $scope.trace.push(item);
         }
     };
 
     $scope.clickHistory = function(i) {
-        $scope.history.splice(i + 1);
-
-        var item = $scope.history[i];
-        var tempNameArr = [];
-        for(var i=0; i<$scope.history.length; i++) {
-            tempNameArr[i] = $scope.history[i].name;
-        }
-        $scope.currentFolderPath = "/" + tempNameArr.join("/") + "/";
-        $scope.currentFolderId = item.id;
-        $scope.list();
+        $scope.trace.splice(i + 1);
     };
 
     $scope.clickHome = function() {
-        $scope.currentFolderId = 1;
-        $scope.currentFolderPath = "/";
-        $scope.history = [];
-        $scope.list();
+        $scope.trace = [];
     };
 
 
 
-    //init
     var init = function () {
         $scope.uploader = new FileUploader({
-            url: 'doc/upload',
+            url: 'private/upload',
             onSuccessItem: function (item, result) {
                 if (result.success == true) {
                     $('#uploadModal').modal('hide');
@@ -193,7 +176,17 @@ app.controller('PrivateDocsController', function ($scope, $http, FileUploader) {
             }
         });
         $scope.list();
+
         $scope.$watch("searchKey", $scope.search);
+        $scope.$watch("trace", function (n, o) {
+            if(n.length === 0) {
+                $scope.currentFolderId = 1;
+            } else {
+                $scope.currentFolderId = n[n.length - 1].id;
+            }
+            $scope.list();
+        }, true);
+
 
         $('#uploadModal').on('hidden.bs.modal', $scope.uploadFormReset);
     }();
