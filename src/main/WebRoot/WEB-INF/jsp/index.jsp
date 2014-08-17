@@ -1,38 +1,24 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="ctx">${pageContext.request.contextPath}</c:set>
-<html ng-app="myApp">
+<html ng-app="webdriver">
 <head>
     <title>My Web Driver</title>
-    <link rel="stylesheet" type="text/css" href="${ctx}/static/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="${ctx}/static/css/bootstrap-theme.css">
-    <link rel="stylesheet" type="text/css" href="${ctx}/static/css/base.css">
-    <script type="text/javascript" src="${ctx}/static/js/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="${ctx}/static/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="${ctx}/static/js/doc.min.js"></script>
-    <script type="text/javascript" src="${ctx}/static/js/angular.min.js"></script>
-    <script type="text/javascript" src="${ctx}/static/js/angluar-file-upload.js"></script>
-    <script type="text/javascript">
-        app = angular.module('myApp',['angularFileUpload']);
-        app.config(function($httpProvider){
-            $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-            $httpProvider.defaults.transformRequest = function (data) {
-                return data?$.param(data):null;
-            };
-        });
-    </script>
-    <script type="text/javascript" src="${ctx}/static/app/controllers/PrivateDocsController.js"></script>
-    <script type="text/javascript" src="${ctx}/static/app/utils/commons.js"></script>
-    <style type="text/css">
-        .table tbody {
-            font-size: 13;
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="static/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="static/bootstrap/css/bootstrap-theme.css">
+    <link rel="stylesheet" type="text/css" href="static/css/base.css">
+    <script type="text/javascript" src="static/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="static/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="static/js/angular.min.js"></script>
+    <script type="text/javascript" src="static/js/angular-file-upload.js"></script>
+    <script type="text/javascript" src="static/app/base.js"></script>
+    <script type="text/javascript" src="static/app/controllers/PrivateDocsController.js"></script>
+
 </head>
+
 <body ng-controller="PrivateDocsController">
-
-
-
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -46,7 +32,7 @@
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="${ctx}/">Home</a></li>
+                <li class="active"><a href="">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
@@ -56,10 +42,10 @@
                         chenzhouce
                         <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="${ctx}/account/settings"><span class="glyphicon glyphicon-cog"></span>
+                        <li><a href="account/settings"><span class="glyphicon glyphicon-cog"></span>
                             Settings</a></li>
                         <li class="divider"></li>
-                        <li><a href="${ctx}/logout"><span class="glyphicon glyphicon-off"></span> Log out</a></li>
+                        <li><a href="logout"><span class="glyphicon glyphicon-off"></span> Log out</a></li>
                     </ul>
                 </li>
             </ul>

@@ -52,7 +52,6 @@ public class WebDoc {
         this.id = id;
     }
 
-
     public String getName() {
         return name;
     }
@@ -77,14 +76,6 @@ public class WebDoc {
         this.size = size;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Date getUpdateTime() {
         return updateTime;
     }
@@ -107,6 +98,14 @@ public class WebDoc {
 
     public void setSerialNum(String serialNum) {
         this.serialNum = serialNum;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Folder getFolder() {

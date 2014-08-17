@@ -50,14 +50,7 @@ body {
 }
 
 
-/*
- * Main content
- */
-
-
-
-
-/*
- * Placeholder dashboard ideas
- */
+.table tbody {
+    font-size: 13;
+}
 

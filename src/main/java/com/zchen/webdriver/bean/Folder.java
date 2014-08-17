@@ -7,6 +7,7 @@ import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
+import javax.persistence.OrderBy;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ public class Folder {
     private Folder parent;
 
     @JsonIgnore
-    @OneToMany
+    @OneToMany @OrderBy(value = "name asc")
     @JoinColumn(name = "parent_id")
     @Cascade(value = CascadeType.DELETE)
     private List<Folder> folders;
@@ -57,13 +58,12 @@ public class Folder {
         this.name = name;
     }
 
-
-    public Folder getParent() {
-        return parent;
+    public Boolean getIsRemoved() {
+        return isRemoved;
     }
 
-    public void setParent(Folder parent) {
-        this.parent = parent;
+    public void setIsRemoved(Boolean isRemoved) {
+        this.isRemoved = isRemoved;
     }
 
     public User getUser() {
@@ -74,18 +74,13 @@ public class Folder {
         this.user = user;
     }
 
-    public String fetchPath() {
-        return this.parent.fetchPath() + "/" + this.name;
+    public Folder getParent() {
+        return parent;
     }
 
-    public Boolean getIsRemoved() {
-        return isRemoved;
+    public void setParent(Folder parent) {
+        this.parent = parent;
     }
-
-    public void setIsRemoved(Boolean isRemoved) {
-        this.isRemoved = isRemoved;
-    }
-
 
     public List<Folder> getFolders() {
         return folders;

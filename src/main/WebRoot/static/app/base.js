@@ -1,3 +1,16 @@
+app = angular.module('webdriver',['angularFileUpload']);
+app.config(function($httpProvider){
+    $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+    $httpProvider.defaults.transformRequest = function (data) {
+        return data?$.param(data):null;
+    };
+});
+
+
+
+
+
+//Utils
 Date.prototype.format = function(fmt) {
     var o = {
         "M+" : this.getMonth()+1,                 //月份
@@ -17,7 +30,7 @@ Date.prototype.format = function(fmt) {
 };
 
 function CommonUtils() {
-};
+}
 CommonUtils.prettySize = function (size) {
     var units = ['B', 'KB', 'MB', 'GB'];
     var i = 0;
